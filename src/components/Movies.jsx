@@ -1,23 +1,30 @@
 //// setup the homepage to display the movies
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllMovies } from '../api';
-import ReviewForm from './ReviewForm';
-import StarRating from './StarRating'; // Import the StarRating component
+import { getAllMovies, fetchMovieReviews } from '../api';
 
 export default function AllMovies() {
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-    const [averageRating, setAverageRating] = useState(0); // State to hold the average rating
     const navigate = useNavigate();
 
     useEffect(() => {
         async function getAllMoviesHandler() {
             try {
                 const moviesData = await getAllMovies();
-                setMovies(moviesData);
+                // Fetch reviews for each movie
+                const moviesWithReviews = await Promise.all(
+                    moviesData.map(async (movie) => {
+                        const reviews = await fetchMovieReviews(movie.id);
+                        return {
+                            ...movie,
+                            reviews: reviews || [] // Default to empty array if reviews is null
+                        };
+                    })
+                );
+                setMovies(moviesWithReviews);
                 setIsLoading(false);
             } catch (error) {
                 setError(error);
@@ -27,20 +34,16 @@ export default function AllMovies() {
         getAllMoviesHandler();
     }, []);
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
     const calculateAverageRating = (reviews) => {
         if (!reviews || reviews.length === 0) {
             return 0;
         }
         const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
         return totalRating / reviews.length;
-    };
-
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
-
-    const handleRatingChange = (newValue) => {
-        setAverageRating(newValue); // Update the average rating state with the new value
     };
 
     const filteredMovies = movies.filter(movie =>
@@ -73,6 +76,7 @@ export default function AllMovies() {
                     <div className="row row-cols-1 row-cols-md-3 g-4">
                         {filteredMovies.map((movie) => {
                             const { id, title, poster_url, category, release_date, reviews } = movie;
+                            const averageRating = calculateAverageRating(reviews);
                             return (
                                 <div key={id} className="col">
                                     <div className="card h-100" style={{ backgroundColor: '#333', color: 'white' }}>
@@ -81,9 +85,9 @@ export default function AllMovies() {
                                             <h5 className="card-title" style={{ color: 'cyan' }}>{title}</h5>
                                             <p className="card-text"><strong style={{ color: 'yellow' }}>Category:</strong> {category}</p>
                                             <p className="card-text"><strong style={{ color: 'orange' }}>Release Date:</strong> {release_date}</p>
-                                            {/* Integrate the StarRating component here */}
+                                        
                                             <div>
-                                                <strong style={{ color: 'green' }}>Average Rating:</strong> <StarRating value={calculateAverageRating(reviews)} onChange={handleRatingChange} />
+                                                <strong style={{ color: 'green' }}>Average Rating:</strong> {averageRating}
                                             </div>
                                         </div>
                                         <div className="card-footer p-2">

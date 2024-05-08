@@ -69,6 +69,3 @@ const SingleMovie = ({ token, userId }) => {
 };
 
 export default SingleMovie;
-
-
-// <p><i className="fas fa-star" style={{ color: 'yellow' }}></i> Average Rating: <span style={{ color: 'yellow' }}>{calculateAverageRating()}</span></p>
