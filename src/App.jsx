@@ -21,7 +21,7 @@ function App() {
           <Link className="navbar-brand" to="/">
             {/* <div className="logo-container"> */}
               <img
-                src="../public/ReelRaveLogo.png"
+                src="./ReelRaveLogo.png"
                 alt="Website Logo"
                 className="logo"
               />
