@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import UserReviews from './UserReviews';
-// import { fetchUserReviews } from '../api';
+// import UserReviews from './UserReviews';
+import { fetchUserReviews } from '../api';
 
-// Updated fetchUserReviews function as shown above
+
+
 
 export const fetchUserInfo = async (userId) => {
   // Mock implementation for demonstration purposes
@@ -18,8 +19,8 @@ const Account = () => {
   const [userReviews, setUserReviews] = useState([]);
   const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(true);
-  const [editedReview, setEditedReview] = useState('');
-  const [editedRating, setEditedRating] = useState(0);
+  // const [editedReview, setEditedReview] = useState('');
+  // const [editedRating, setEditedRating] = useState(0);
   const { userId } = useParams(); // Assuming you have a userId parameter in the route
   const navigate = useNavigate();
 
@@ -39,15 +40,15 @@ const Account = () => {
     fetchData();
   }, [userId]); // Include userId in the dependency array
 
-  const handleEditReview = (id) => {
-    // Logic to handle editing the review
-    navigate(`/edit-review/${id}`); // Assuming you have a route for editing reviews
-  };
+  // const handleEditReview = (id) => {
+  //   // Logic to handle editing the review
+  //   navigate(`/edit-review/${id}`); // Assuming you have a route for editing reviews
+  // };
 
-  const handleDeleteReview = (id) => {
-    // Logic to handle deleting the review
-    setUserReviews(userReviews.filter((review) => review.id !== id));
-  };
+  // const handleDeleteReview = (id) => {
+  //   // Logic to handle deleting the review
+  //   setUserReviews(userReviews.filter((review) => review.id !== id));
+  // };
 
   return (
     <div style={{ textAlign: 'center' }}>

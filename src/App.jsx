@@ -12,6 +12,26 @@ import Account from "./components/Account";
 function App() {
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
+  // const [isAdmin, setisAdmin] = useState(false);
+
+//   const handleAdminLogin = () => {
+//   const adminUsername = "queen";
+//   const adminPassword = "queenadmin";
+
+//   // Simulate user input for username and password
+//   const username = prompt("Enter username:");
+//   const password = prompt("Enter password:");
+
+//   // Check if the entered username and password match the admin credentials
+//   if (username === adminUsername && password === adminPassword) {
+//     // If the credentials match, set isAdmin to true
+//     setIsAdmin(true);
+//     alert("Successfully logged in as admin!");
+//   } else {
+//     // If the credentials do not match, display an error message
+//     alert("Invalid username or password. Please try again.");
+//   }
+// }
 
   return (
     
@@ -71,7 +91,7 @@ function App() {
       <div>
         <Routes>
 
-          <Route path='/' element={<Movies userId={userId} />} />
+          <Route path='/' element={<Movies userId={userId}  token={token} />} />
           <Route path='/api/movies/:movieId' element={<SingleMovie token={token} userId={userId} />} />
           <Route path='/login' element={<Login setToken={setToken} setUserId={setUserId} userId={userId} />} />
           <Route path='/register' element={<Register setToken={setToken} setUserId={setUserId} />} />
