@@ -1,6 +1,7 @@
 // Account.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import UserReviews from './UserReviews';
 import { fetchUserReviews, fetchUserInfo } from '../api';
 
@@ -11,6 +12,7 @@ const Account = ({ userId }) => {
   const [error, setError] = useState(null);
   // const [editedReview, setEditedReview] = useState('');
   // const [editedRating, setEditedRating] = useState(0);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,13 +35,7 @@ const Account = ({ userId }) => {
     fetchData();
   }, [userId]); // Include userId in the dependency array
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
 
-  if (error) {
-    return <p>Error: {error.message}</p>;
-  }
   // const handleEditReview = (id) => {
   //   // Logic to handle editing the review
   //   navigate(`/edit-review/${id}`); // Assuming you have a route for editing reviews
