@@ -19,9 +19,7 @@ const ReviewManager = ({ movieId, userId }) => {
         fetchReviews();
     }, []);
 
-console.log({reviews})
-    
-const handleReviewSubmit = async (reviewData) => {
+    const handleReviewSubmit = async (reviewData) => {
         try {
             // Submit review
             await submitReview(reviewData);
@@ -34,16 +32,10 @@ const handleReviewSubmit = async (reviewData) => {
         }
     };
 
-    console.log({ reviews });
-
     return (
         <div>
-            <ReviewForm
-                movieId={movieId}
-                userId={userId}
-                onReviewSubmit={handleReviewSubmit}
-            />
-
+            {userId && <ReviewForm movieId={movieId} userId={userId} onReviewSubmit={handleReviewSubmit} />}
+            
             <div>
                 {reviews.length > 0 ? (
                     reviews.map((review) => (

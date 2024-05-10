@@ -1,7 +1,8 @@
 //// setup the homepage to display the movies
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllMovies, deleteMovieById } from '../api';
+
+import { getAllMovies, deleteMovieById, fetchMovieReviews } from '../api';
 
 export default function AllMovies({ isAdmin }) {
     console.log({isAdmin});
@@ -15,7 +16,17 @@ export default function AllMovies({ isAdmin }) {
         async function getAllMoviesHandler() {
             try {
                 const moviesData = await getAllMovies();
-                setMovies(moviesData);
+                // Fetch reviews for each movie
+                const moviesWithReviews = await Promise.all(
+                    moviesData.map(async (movie) => {
+                        const reviews = await fetchMovieReviews(movie.id);
+                        return {
+                            ...movie,
+                            reviews: reviews || [] // Default to empty array if reviews is null
+                        };
+                    })
+                );
+                setMovies(moviesWithReviews);
                 setIsLoading(false);
             } catch (error) {
                 setError(error);
@@ -25,6 +36,10 @@ export default function AllMovies({ isAdmin }) {
         getAllMoviesHandler();
     }, []);
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
     const calculateAverageRating = (reviews) => {
         if (!reviews || reviews.length === 0) {
             return 0;
@@ -32,6 +47,7 @@ export default function AllMovies({ isAdmin }) {
         const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
         return totalRating / reviews.length;
     };
+
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -45,6 +61,7 @@ export default function AllMovies({ isAdmin }) {
             console.error('Error deleting movie:', error);
         }
     };
+
 
     if (isLoading) {
         return <p>Loading...</p>;
@@ -71,6 +88,7 @@ export default function AllMovies({ isAdmin }) {
             <div className='black-background'>
                 <div className='container'>
                     <div className="row row-cols-1 row-cols-md-3 g-4">
+
                         {movies
                             .filter(movie => movie.title.toLowerCase().includes(searchQuery.toLowerCase()))
                             .map((movie) => {
@@ -93,7 +111,7 @@ export default function AllMovies({ isAdmin }) {
                                                 ) : (
                                                     <button onClick={() => navigate(`/movies/${id}`)} className='btn btn-primary btn-sm' style={{ backgroundColor: 'purple' }}>See Details</button>
                                                 )}
-                                            </div>
+                   </div>
                                         </div>
                                     </div>
                                 );

@@ -1,6 +1,6 @@
 // App.jsx
 import React, { useState } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, Navigate } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import Movies from "./components/Movies";
@@ -32,6 +32,16 @@ function App() {
 //     alert("Invalid username or password. Please try again.");
 //   }
 // }
+
+// Logout function
+const logout = () => {
+  // Clear authentication token and user ID
+  setToken(null);
+  setUserId(null);
+  // Redirect to login page or any other appropriate action
+  return <Navigate to="/login" />;
+};
+
 
   return (
     
@@ -68,6 +78,11 @@ function App() {
                   <Link className="nav-link" to="/users/me">
                     Account
                   </Link>
+                </li>
+                <li className="nav-item">
+                  <button className="nav-link btn btn-link" onClick={logout}>
+                    Logout
+                  </button>
                 </li>
               </ul>
             ) : (

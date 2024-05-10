@@ -1,6 +1,5 @@
 // ReviewForm.jsx
 import { useState } from 'react';
-import StarRating from './StarRating';
 
 const ReviewForm = ({ onReviewSubmit, movieId, userId }) => {
     const [rating, setRating] = useState(0);
@@ -34,16 +33,15 @@ const ReviewForm = ({ onReviewSubmit, movieId, userId }) => {
         }
     };
 
-
     return (
         <fieldset className="ReviewForm" style={{ backgroundColor: '#222', padding: '20px', marginTop: '20px', color: 'white' }}>
             <h5 style={{ color: 'white' }}>Rate this Movie:</h5>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label style={{ color: 'white' }}>Rating:</label>
-                    {/* Replace the number input with the StarRating component */}
-                    <StarRating onChange={setRating} />
+                    <input type="number" min="1" max="5" value={rating} onChange={(e) => setRating(e.target.value)} required />
                 </div>
+                <p> </p>
                 <div className="form-group">
                     <label style={{ color: 'white' }}>Comment:</label>
                     <textarea 
