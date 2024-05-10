@@ -2,6 +2,7 @@
 //DO WE NEED TO DEPLOY TO GET OUR BASE URL?
 // const API_URL = "https://localhost:5432";
 
+// index.js
 export const getAllMovies = async () => {
     try {
         const result = await fetch('https://capstoneprojectbackend-ywy6.onrender.com/api/movies');
@@ -95,17 +96,19 @@ try{
 
     export const fetchUserReviews = async (userId) => {
         try {
-            const result = await fetch(`https://capstoneprojectbackend-ywy6.onrender.com/api/reviews/${userId}`);
+            const result = await fetch(`https://capstoneprojectbackend-ywy6.onrender.com/api/reviews/users/${userId}`);
             if (!result.ok) {
-                throw new Error('Failed to fetch review');
+                throw new Error(`Failed to fetch user reviews: ${result.status} ${result.statusText}`);
             }
             const response = await result.json();
             return response.review;
         } catch (error) {
-            console.log(error);
-            throw new Error("Failed to fetch review");
+            console.error('Error fetching user reviews:', error);
+            throw new Error('Failed to fetch user reviews');
         }
-    }
+    };
+    
+    
 
     // export const fetchComments = async () => {
     //     try {
@@ -174,3 +177,18 @@ try{
             throw new Error(error.message);
         }
     }
+
+    export const fetchUserInfo = async (userId) => {
+        try {
+          const result = await fetch(`https://capstoneprojectbackend-ywy6.onrender.com/api/users/${userId}`);
+          if (!result.ok) {
+            throw new Error('Failed to fetch user information');
+          }
+          const userInfo = await result.json();
+          return userInfo;
+        } catch (error) {
+          console.error('Failed to fetch user information:', error);
+          throw new Error('Failed to fetch user information');
+        }
+      };
+      
