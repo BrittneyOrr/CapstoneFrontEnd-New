@@ -107,7 +107,7 @@ const logout = () => {
         <Routes>
 
           <Route path='/' element={<Movies userId={userId}  token={token} setIsAdmin={setIsAdmin} isAdmin={isAdmin} />} />
-          <Route path='/api/movies/:movieId' element={<SingleMovie token={token} userId={userId} />} />
+          <Route path='/movies/:movieId' element={<SingleMovie token={token} userId={userId} />} />
           <Route path='/login' element={<Login setToken={setToken} setUserId={setUserId} userId={userId} setIsAdmin={setIsAdmin} isAdmin={isAdmin}  />} />
           <Route path='/register' element={<Register setToken={setToken} setUserId={setUserId} />} />
           <Route path='/users/me' element={<Account token={token} userId={userId} />} />

@@ -48,11 +48,6 @@ export default function AllMovies({ isAdmin }) {
         return totalRating / reviews.length;
     };
 
-
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
-
     const handleDeleteMovie = async (movieId) => {
         try {
             await deleteMovieById(movieId);
@@ -61,7 +56,6 @@ export default function AllMovies({ isAdmin }) {
             console.error('Error deleting movie:', error);
         }
     };
-
 
     if (isLoading) {
         return <p>Loading...</p>;
