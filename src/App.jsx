@@ -12,7 +12,7 @@ import Account from "./components/Account";
 function App() {
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
-  // const [isAdmin, setisAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
 //   const handleAdminLogin = () => {
 //   const adminUsername = "queen";
@@ -25,7 +25,7 @@ function App() {
 //   // Check if the entered username and password match the admin credentials
 //   if (username === adminUsername && password === adminPassword) {
 //     // If the credentials match, set isAdmin to true
-//     setIsAdmin(true);
+//     setisadmin(true);
 //     alert("Successfully logged in as admin!");
 //   } else {
 //     // If the credentials do not match, display an error message
@@ -91,9 +91,9 @@ function App() {
       <div>
         <Routes>
 
-          <Route path='/' element={<Movies userId={userId}  token={token} />} />
+          <Route path='/' element={<Movies userId={userId}  token={token} setIsAdmin={setIsAdmin} isAdmin={isAdmin} />} />
           <Route path='/api/movies/:movieId' element={<SingleMovie token={token} userId={userId} />} />
-          <Route path='/login' element={<Login setToken={setToken} setUserId={setUserId} userId={userId} />} />
+          <Route path='/login' element={<Login setToken={setToken} setUserId={setUserId} userId={userId} setIsAdmin={setIsAdmin} isAdmin={isAdmin}  />} />
           <Route path='/register' element={<Register setToken={setToken} setUserId={setUserId} />} />
           <Route path='/users/me' element={<Account token={token} userId={userId} />} />
 

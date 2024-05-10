@@ -23,7 +23,8 @@ try{
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     username,
-                    password
+                    password,
+                    
                 })
             });
             console.log(response);
@@ -176,21 +177,42 @@ try{
         }
     }
 
-    export const deleteMovieById = async (movieId, token) => {
-        console.log(movieId);
-        try {
-            // if (!isAdmin) {
-            //     throw new Error('User is not authorized to delete movies');
-            // }
+    // export const deleteMovieById = async (movieId) => {
+    //     console.log(movieId);
+    //     // try {
+    //     //     if (!isadmin) {
+    //     //         throw new Error('User is not authorized to delete movies');
+    //     //     }
     
+    //         const response = await fetch(`https://capstoneprojectbackend-ywy6.onrender.com/api/movies/${movieId}`, {
+    //             method: 'DELETE',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 // 'Authorization': `Bearer ${token}`
+    //             },
+    //             body: JSON.stringify()
+    //         });
+    //         console.log(response);
+    
+    //         if (!response.ok) {
+    //             throw new Error('Failed to delete movie');
+    //         }
+    
+    //         const data = await response.json();
+    //         return data;
+    //     } catch (error) {
+    //         throw new Error(error.message);
+    //     }
+    // };
+
+    export const deleteMovieById = async (movieId) => {
+        try {
             const response = await fetch(`https://capstoneprojectbackend-ywy6.onrender.com/api/movies/${movieId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
+                },
             });
-            console.log(response);
     
             if (!response.ok) {
                 throw new Error('Failed to delete movie');

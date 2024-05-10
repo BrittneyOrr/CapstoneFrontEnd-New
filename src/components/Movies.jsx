@@ -1,19 +1,14 @@
 //// setup the homepage to display the movies
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllMovies } from '../api';
-import { useParams } from 'react-router-dom';
-import ReviewForm from './ReviewForm';
-import StarRating from './StarRating'; // Import the StarRating component
-import { deleteMovieById } from '../api/index';
+import { getAllMovies, deleteMovieById } from '../api';
 
-export default function AllMovies({ token, isAdmin }) {
+export default function AllMovies({ isAdmin }) {
+    console.log({isAdmin});
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-    const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false); // Track admin login status
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -42,33 +37,9 @@ export default function AllMovies({ token, isAdmin }) {
         setSearchQuery(e.target.value);
     };
 
-    // const handleDeleteMovie = async (movieId) => {
-    //     try {
-    //         await deleteMovieById(movieId);
-    //         setMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId)); // Remove deleted movie from state
-    //     } catch (error) {
-    //         console.error('Error deleting movie:', error);
-    //     }
-    // };
-
-    const handleAdminLogin = () => {
-        const adminUsername = "queen";
-        const adminPassword = "queenadmin";
-
-        const username = prompt("Enter username:");
-        const password = prompt("Enter password:");
-
-        if (username === adminUsername && password === adminPassword) {
-            setIsAdminLoggedIn(true); // Set isAdminLoggedIn to true if login successful
-            alert("Successfully logged in as admin!");
-        } else {
-            alert("Invalid username or password. Please try again.");
-        }
-    };
-
     const handleDeleteMovie = async (movieId) => {
         try {
-            await deleteMovieById(movieId, token);
+            await deleteMovieById(movieId);
             setMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId)); // Remove deleted movie from state
         } catch (error) {
             console.error('Error deleting movie:', error);
@@ -84,19 +55,6 @@ export default function AllMovies({ token, isAdmin }) {
 
     return (
         <div>
-            {isAdminLoggedIn && (
-                <div>
-                    <p>Welcome, Admin!</p>
-                    {/* Display admin-specific UI */}
-                    <button onClick={() => navigate('/account')}>Account</button>
-                </div>
-            )}
-            {!isAdminLoggedIn && (
-                <div>
-                    <button onClick={handleAdminLogin}>Admin Login</button>
-                    {/* Render Sign In and Create Account only if admin is not logged in */}
-                </div>
-            )}
             <div className="bg-dark">
                 <div className="container py-4">
                     <h1 className="text-light">ReelRave</h1>
@@ -130,10 +88,10 @@ export default function AllMovies({ token, isAdmin }) {
                                                 </div>
                                             </div>
                                             <div className="card-footer p-2">
-                                                {isAdminLoggedIn ? ( // Check if admin is logged in
+                                                {isAdmin ? ( // Check if admin is logged in
                                                     <button onClick={() => handleDeleteMovie(id)} className='btn btn-danger btn-sm'>Delete Movie</button>
                                                 ) : (
-                                                    <button onClick={() => navigate(`/api/movies/${id}`)} className='btn btn-primary btn-sm' style={{ backgroundColor: 'purple' }}>See Details</button>
+                                                    <button onClick={() => navigate(`/movies/${id}`)} className='btn btn-primary btn-sm' style={{ backgroundColor: 'purple' }}>See Details</button>
                                                 )}
                                             </div>
                                         </div>
