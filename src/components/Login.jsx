@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
 
-export default function Login({ setToken, setUserId }) {
+export default function Login({ setToken, setUserId, setIsAdmin }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -21,20 +21,22 @@ export default function Login({ setToken, setUserId }) {
         e.preventDefault();
         try {
             // clear form after submission
-            const { token, user } = await login(username, password); // Assuming login function returns token and userId
+            const { token, user, isAdmin } = await login(username, password); // Assuming login function returns token and userId
             setToken(token);
             setUserId(user.id); // Set the userId in state
-            // localStorage.setItem('token', token); 
+            console.log({user, isAdmin});
+            setIsAdmin(user.isadmin)
             setUsername('');
             setPassword('');
-            if (token) { // Check if token exists
+            if (user.isAdmin) { // Check if user is admin
+                navigate('/');
+            } else {
                 navigate('/');
             }
         } catch (err) {
             console.log(err);
             setError('An error occurred while logging in');
         }
-
     };
 
     return (

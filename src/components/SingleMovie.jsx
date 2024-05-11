@@ -7,8 +7,8 @@ import ReviewManager from './ReviewManager';
 
 const SingleMovie = ({ token, userId }) => {
     const [movie, setMovie] = useState(null);
+    const [averageRating, setAverageRating] = useState(0); // State to hold the average rating
     const { movieId } = useParams();
-
 
     useEffect(() => {
         async function fetchMovieData() {
@@ -22,11 +22,28 @@ const SingleMovie = ({ token, userId }) => {
         fetchMovieData();
     }, [movieId]);
 
+    useEffect(() => {
+        async function calculateAverageRating() {
+            try {
+                const reviews = await fetchMovieReviews(movieId);
+                const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+                const avgRating = reviews.length > 0 ? totalRating / reviews.length : 0;
+                setAverageRating(avgRating);
+            } catch (error) {
+                console.error('Error fetching reviews:', error);
+            }
+        }
+        calculateAverageRating();
+    }, [movieId]);
+
     const handleReviewSubmit = async (reviewData) => {
         try {
             await submitReview(reviewData);
             const updatedReviews = await fetchMovieReviews(movieId);
-            setReviews(updatedReviews);
+            // Update average rating after submitting the review
+            const totalRating = updatedReviews.reduce((sum, review) => sum + review.rating, 0);
+            const avgRating = updatedReviews.length > 0 ? totalRating / updatedReviews.length : 0;
+            setAverageRating(avgRating);
         } catch (error) {
             console.error('Error submitting review:', error);
             // Handle error
@@ -50,25 +67,22 @@ const SingleMovie = ({ token, userId }) => {
                                         <p><i className="fas fa-film" style={{ color: 'green' }}></i> Category: <span style={{ color: 'green' }}>{movie.category}</span></p>
                                         <p><i className="fas fa-calendar-alt" style={{ color: 'orange' }}></i> Release Date: <span style={{ color: 'orange' }}>{movie.release_date}</span></p>
                                         <p><i className="fas fa-align-left" style={{ color: 'cyan' }}></i> Movie Plot: <span style={{ color: 'cyan' }}>{movie.plot}</span></p>
+                                        <p><i className="fas fa-star" style={{ color: 'yellow' }}></i> Average Rating: <span style={{ color: 'yellow' }}>{averageRating}</span></p>
                                     </div>
                                     <div className="card-footer">
-                                    {token ? (
+                                        {/* Render ReviewManager component always */}
                                         <ReviewManager movieId={movieId} userId={userId} />
-                                    ) : null}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ) : (
-                    <p>Loading...</p>
-                )}
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+                </div>
             </div>
         </div>
-    </div>
-);
+    );
 };
 
 export default SingleMovie;
-
-
-// <p><i className="fas fa-star" style={{ color: 'yellow' }}></i> Average Rating: <span style={{ color: 'yellow' }}>{calculateAverageRating()}</span></p>

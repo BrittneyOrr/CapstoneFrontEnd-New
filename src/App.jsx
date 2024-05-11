@@ -1,6 +1,6 @@
 // App.jsx
 import React, { useState } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import Movies from "./components/Movies";
@@ -12,6 +12,17 @@ import Account from "./components/Account";
 function App() {
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
+
+// Logout function
+const logout = () => {
+  setToken(null);
+  setUserId(null);
+  setIsAdmin(false);
+  navigate("/");
+};
+
 
   return (
     
@@ -49,6 +60,11 @@ function App() {
                     Account
                   </Link>
                 </li>
+                <li className="nav-item">
+                  <button className="nav-link btn btn-link" onClick={logout}>
+                    Logout
+                  </button>
+                </li>
               </ul>
             ) : (
               <ul className="navbar-nav ml-auto">
@@ -71,12 +87,12 @@ function App() {
       <div>
         <Routes>
 
-          <Route path='/' element={<Movies userId={userId} />} />
-          <Route path='/api/movies/:movieId' element={<SingleMovie token={token} userId={userId} />} />
-          <Route path='/login' element={<Login setToken={setToken} setUserId={setUserId} userId={userId} />} />
-          <Route path='/register' element={<Register setToken={setToken} setUserId={setUserId} />} />
-          <Route path='/users/me' element={<Account token={token} userId={userId} />} />
-
+        <Route path='/' element={<Movies userId={userId}  token={token} setIsAdmin={setIsAdmin} isAdmin={isAdmin} />} />
+        <Route path='/movies/:movieId' element={<SingleMovie token={token} userId={userId} />} />
+        <Route path='/login' element={<Login setToken={setToken} setUserId={setUserId} userId={userId} setIsAdmin={setIsAdmin} isAdmin={isAdmin}  />} />
+        <Route path='/register' element={<Register setToken={setToken} setUserId={setUserId} />} />
+        <Route path='/users/me' element={<Account token={token} userId={userId} setIsAdmin={setIsAdmin} isAdmin={isAdmin} />} />
+      
         </Routes>
       </div>
       </div>

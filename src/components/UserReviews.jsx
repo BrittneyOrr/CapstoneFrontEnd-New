@@ -1,12 +1,12 @@
+// UserReviews.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchUserReviews } from '../api';
 
-export default function UserReviews () {
+export default function UserReviews ({ userId }) {
     const [userReviews, setUserReviews] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const { userId } = useParams();
 
     useEffect(() => {
         async function getUserReviewsHandler() {
@@ -32,7 +32,7 @@ export default function UserReviews () {
             <div className='container'>
                 <div className="row row-cols-1 row-cols-md-3 g-4">
                     {userReviews.map((userReview) => {
-                        const { rating, comment, review_date } = review;
+                        const { rating, comment, review_date } = userReview;
                         return (
                             <div key={userId} className="col">
                                 <div className="card h-100" style={{ backgroundColor: '#333', color: 'white' }}>
