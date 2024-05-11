@@ -108,36 +108,6 @@ try{
             throw new Error('Failed to fetch user reviews');
         }
     };
-    
-    
-
-    // export const fetchComments = async () => {
-    //     try {
-    //         const result = await fetch('/api/comments');
-    //         if (!result.ok) {
-    //             throw new Error('Failed to fetch comments');
-    //         }
-    //         const response = await result.json();
-    //         return response.comments;
-    //     } catch (error) {
-    //         console.log(error);
-    //         throw new Error("Failed to fetch comments");
-    //     }
-    // }
-
-    // export const fetchComment = async (id) => {
-    //     try {
-    //         const result = await fetch(`/api/comments/${id}`);
-    //         if (!result.ok) {
-    //             throw new Error('Failed to fetch comment');
-    //         }
-    //         const response = await result.json();
-    //         return response.comment;
-    //     } catch (error) {
-    //         console.log(error);
-    //         throw new Error("Failed to fetch comment");
-    //     }
-    // }
 
     export async function register(userData) {
         try {
@@ -179,35 +149,6 @@ try{
         }
     }
 
-
-    // export const deleteMovieById = async (movieId) => {
-    //     console.log(movieId);
-    //     // try {
-    //     //     if (!isadmin) {
-    //     //         throw new Error('User is not authorized to delete movies');
-    //     //     }
-    
-    //         const response = await fetch(`https://capstoneprojectbackend-ywy6.onrender.com/api/movies/${movieId}`, {
-    //             method: 'DELETE',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 // 'Authorization': `Bearer ${token}`
-    //             },
-    //             body: JSON.stringify()
-    //         });
-    //         console.log(response);
-    
-    //         if (!response.ok) {
-    //             throw new Error('Failed to delete movie');
-    //         }
-    
-    //         const data = await response.json();
-    //         return data;
-    //     } catch (error) {
-    //         throw new Error(error.message);
-    //     }
-    // };
-
     export const deleteMovieById = async (movieId) => {
         try {
             const response = await fetch(`https://capstoneprojectbackend-ywy6.onrender.com/api/movies/${movieId}`, {
@@ -243,3 +184,32 @@ try{
       };
       
 
+      export const getAllUsers = async () => {
+        try {
+            const result = await fetch('https://capstoneprojectbackend-ywy6.onrender.com/api/users');
+            if (!result.ok) {
+                throw new Error('Failed to fetch users');
+            }
+            const response = await result.json();
+            console.log(response);
+            return response;
+        } catch(error) {
+            console.error('Error fetching users:', error); // Log error
+            throw error; 
+        }
+    }; 
+
+    export const getAllReviews = async () => {
+        try {
+            const result = await fetch('https://capstoneprojectbackend-ywy6.onrender.com/api/reviews');
+            if (!result.ok) {
+                throw new Error('Failed to fetch reviews');
+            }
+            const response = await result.json();
+            console.log(response);
+            return response;
+        } catch(error) {
+            console.error('Error fetching reviews:', error); // Log error
+            throw error; 
+        }
+    }; 

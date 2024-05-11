@@ -1,7 +1,6 @@
 //// setup the homepage to display the movies
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { getAllMovies, deleteMovieById, fetchMovieReviews } from '../api';
 
 export default function AllMovies({ isAdmin }) {
@@ -16,13 +15,12 @@ export default function AllMovies({ isAdmin }) {
         async function getAllMoviesHandler() {
             try {
                 const moviesData = await getAllMovies();
-                // Fetch reviews for each movie
                 const moviesWithReviews = await Promise.all(
                     moviesData.map(async (movie) => {
                         const reviews = await fetchMovieReviews(movie.id);
                         return {
                             ...movie,
-                            reviews: reviews || [] // Default to empty array if reviews is null
+                            reviews: reviews || []
                         };
                     })
                 );

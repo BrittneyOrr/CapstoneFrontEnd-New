@@ -1,6 +1,6 @@
 // App.jsx
 import React, { useState } from "react";
-import { Routes, Route, Link, Navigate } from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import Movies from "./components/Movies";
@@ -13,33 +13,14 @@ function App() {
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-
-//   const handleAdminLogin = () => {
-//   const adminUsername = "queen";
-//   const adminPassword = "queenadmin";
-
-//   // Simulate user input for username and password
-//   const username = prompt("Enter username:");
-//   const password = prompt("Enter password:");
-
-//   // Check if the entered username and password match the admin credentials
-//   if (username === adminUsername && password === adminPassword) {
-//     // If the credentials match, set isAdmin to true
-//     setisadmin(true);
-//     alert("Successfully logged in as admin!");
-//   } else {
-//     // If the credentials do not match, display an error message
-//     alert("Invalid username or password. Please try again.");
-//   }
-// }
+  const navigate = useNavigate();
 
 // Logout function
 const logout = () => {
-  // Clear authentication token and user ID
   setToken(null);
   setUserId(null);
-  // Redirect to login page or any other appropriate action
-  return <Navigate to="/login" />;
+  setIsAdmin(false);
+  navigate("/");
 };
 
 
@@ -106,12 +87,12 @@ const logout = () => {
       <div>
         <Routes>
 
-          <Route path='/' element={<Movies userId={userId}  token={token} setIsAdmin={setIsAdmin} isAdmin={isAdmin} />} />
-          <Route path='/movies/:movieId' element={<SingleMovie token={token} userId={userId} />} />
-          <Route path='/login' element={<Login setToken={setToken} setUserId={setUserId} userId={userId} setIsAdmin={setIsAdmin} isAdmin={isAdmin}  />} />
-          <Route path='/register' element={<Register setToken={setToken} setUserId={setUserId} />} />
-          <Route path='/users/me' element={<Account token={token} userId={userId} />} />
-
+        <Route path='/' element={<Movies userId={userId}  token={token} setIsAdmin={setIsAdmin} isAdmin={isAdmin} />} />
+        <Route path='/movies/:movieId' element={<SingleMovie token={token} userId={userId} />} />
+        <Route path='/login' element={<Login setToken={setToken} setUserId={setUserId} userId={userId} setIsAdmin={setIsAdmin} isAdmin={isAdmin}  />} />
+        <Route path='/register' element={<Register setToken={setToken} setUserId={setUserId} />} />
+        <Route path='/users/me' element={<Account token={token} userId={userId} setIsAdmin={setIsAdmin} isAdmin={isAdmin} />} />
+      
         </Routes>
       </div>
       </div>

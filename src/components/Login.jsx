@@ -26,7 +26,6 @@ export default function Login({ setToken, setUserId, setIsAdmin }) {
             setUserId(user.id); // Set the userId in state
             console.log({user, isAdmin});
             setIsAdmin(user.isadmin)
-            // localStorage.setItem('token', token); 
             setUsername('');
             setPassword('');
             if (user.isAdmin) { // Check if user is admin
