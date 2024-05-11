@@ -8,7 +8,6 @@ export const getAllMovies = async () => {
             throw new Error('Failed to fetch movies');
         }
         const response = await result.json();
-        console.log(response);
         return response;
     } catch(error) {
         console.error('Error fetching movies:', error); // Log error
@@ -94,6 +93,28 @@ try{
         }
     }
 
+    export const updateReview = async (reviewData) => {
+        try {
+          const response = await fetch(
+            `https://capstoneprojectbackend-ywy6.onrender.com/api/reviews/${reviewData.id}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(reviewData)
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to update review");
+          }
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          throw new Error(error.message);
+        }
+      };
+
     export const submitReview = async (reviewData) => {
         try {
 
@@ -133,6 +154,29 @@ try{
             throw new Error(error.message);
         }
     }
+
+    export const deleteReviewByID = async (reviewId) => {
+        try {
+          const response = await fetch(
+            `https://capstoneprojectbackend-ywy6.onrender.com/api/reviews/${reviewId}`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json"
+              }
+            }
+          );
+      
+          if (!response.ok) {
+            throw new Error("Failed to delete review");
+          }
+      
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          throw new Error(error.message);
+        }
+      };
 
     export const deleteMovieById = async (movieId) => {
         try {

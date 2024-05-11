@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { getAllMovies, deleteMovieById, fetchMovieReviews } from '../api';
 
 export default function AllMovies({ isAdmin }) {
-    console.log({isAdmin});
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
