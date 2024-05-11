@@ -1,6 +1,4 @@
 // setup the API CRUD to pull movies
-//DO WE NEED TO DEPLOY TO GET OUR BASE URL?
-// const API_URL = "https://localhost:5432";
 
 // index.js
 export const getAllMovies = async () => {
@@ -35,36 +33,6 @@ try{
 }
 
 }
-
-    // export const getAllMovies = async () => {
-    //     try {
-    //         const result = { 
-    //             titles: ["Dune", "Dune: Part Two"],
-    //             category: "Science fiction",
-    //             releaseDates: ["2021-10-22", "2024-01-03"], // Changed release dates to strings
-    //             posterUrls: ["https://www.themoviedb.org/t/p/w1280/d5NXSklXo0qyIYkgV94XAgMIckC.jpg", "https://www.themoviedb.org/t/p/w1280/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg"],
-    //             plots: [
-    //                 "Paul Atreides, a brilliant and gifted young man born into a great destiny beyond his understanding, must travel to the most dangerous planet in the universe to ensure the future of his family and his people. As malevolent forces explode into conflict over the planet's exclusive supply of the most precious resource in existence-a commodity capable of unlocking humanity's greatest potential-only those who can conquer their fear will survive.",
-    //                 "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice"
-    //             ],
-    //         };
-    
-    //         const movies = result.titles.map((title, index) => ({
-    //             id: index + 1, // You can generate IDs based on array index
-    //             title,
-    //             category: result.category,
-    //             releaseDate: result.releaseDates[index],
-    //             imageUrl: result.posterUrls[index],
-    //             plot: result.plots[index]
-    //         }));
-    
-    //         return movies;
-    //     } catch(error) {
-    //         console.log(error);
-    //         throw new Error("Failed to fetch movies");
-    //     }
-    // };
-
     export const fetchMovie = async (movieId) => {
         try {
             const result = await fetch(`https://capstoneprojectbackend-ywy6.onrender.com/api/movies/${movieId}`);
@@ -128,9 +96,6 @@ try{
 
     export const submitReview = async (reviewData) => {
         try {
-                // await fetch('https://localhost:3000/api/reviews', {
-        //     // Example: Make an API request to submit review data to the server
-
 
             const response = await fetch('https://capstoneprojectbackend-ywy6.onrender.com/api/reviews', {
                 method: 'POST',
@@ -141,6 +106,26 @@ try{
             });
             if (!response.ok) {
                 throw new Error('Failed to submit review');
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    export const submitMovie = async (movieFormData) => {
+        try {
+
+            const response = await fetch('https://capstoneprojectbackend-ywy6.onrender.com/api/movies', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(movieFormData),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to submit new movie');
             }
             const data = await response.json();
             return data;

@@ -1,6 +1,7 @@
 // Account.jsx
 import React, { useState, useEffect } from 'react';
 import { getAllUsers, getAllReviews, fetchUserReviews, fetchUserInfo } from '../api'; 
+import MovieFormManager from './MovieFormManager';
 import { useNavigate } from 'react-router-dom';
 
 const Account = ({ userId, isAdmin }) => {
@@ -49,6 +50,8 @@ const Account = ({ userId, isAdmin }) => {
       <h1>{isAdmin ? 'Admin Account' : 'Account Details'}</h1>
       {isAdmin ? (
         <div>
+        <MovieFormManager />
+        <p> </p>
           <h2>All Users</h2>
           <table className="table">
             <thead>
