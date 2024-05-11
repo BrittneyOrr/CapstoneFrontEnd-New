@@ -6,7 +6,6 @@ export default function RegisterUser({setUserId}) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    // const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -21,10 +20,8 @@ export default function RegisterUser({setUserId}) {
                 password
             });
             console.log(response);
-            // Handle success, set token, navigate, etc.
+            
             const { token } = response;
-            // setToken(token);
-            // localStorage.setItem('token', token); 
             setUsername('');
             setPassword('');
             setUserId('');

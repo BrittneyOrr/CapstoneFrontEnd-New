@@ -36,34 +36,6 @@ try{
 
 }
 
-    // export const getAllMovies = async () => {
-    //     try {
-    //         const result = { 
-    //             titles: ["Dune", "Dune: Part Two"],
-    //             category: "Science fiction",
-    //             releaseDates: ["2021-10-22", "2024-01-03"], // Changed release dates to strings
-    //             posterUrls: ["https://www.themoviedb.org/t/p/w1280/d5NXSklXo0qyIYkgV94XAgMIckC.jpg", "https://www.themoviedb.org/t/p/w1280/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg"],
-    //             plots: [
-    //                 "Paul Atreides, a brilliant and gifted young man born into a great destiny beyond his understanding, must travel to the most dangerous planet in the universe to ensure the future of his family and his people. As malevolent forces explode into conflict over the planet's exclusive supply of the most precious resource in existence-a commodity capable of unlocking humanity's greatest potential-only those who can conquer their fear will survive.",
-    //                 "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice"
-    //             ],
-    //         };
-    
-    //         const movies = result.titles.map((title, index) => ({
-    //             id: index + 1, // You can generate IDs based on array index
-    //             title,
-    //             category: result.category,
-    //             releaseDate: result.releaseDates[index],
-    //             imageUrl: result.posterUrls[index],
-    //             plot: result.plots[index]
-    //         }));
-    
-    //         return movies;
-    //     } catch(error) {
-    //         console.log(error);
-    //         throw new Error("Failed to fetch movies");
-    //     }
-    // };
 
     export const fetchMovie = async (movieId) => {
         try {
@@ -180,33 +152,7 @@ try{
     }
 
 
-    // export const deleteMovieById = async (movieId) => {
-    //     console.log(movieId);
-    //     // try {
-    //     //     if (!isadmin) {
-    //     //         throw new Error('User is not authorized to delete movies');
-    //     //     }
     
-    //         const response = await fetch(`https://capstoneprojectbackend-ywy6.onrender.com/api/movies/${movieId}`, {
-    //             method: 'DELETE',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 // 'Authorization': `Bearer ${token}`
-    //             },
-    //             body: JSON.stringify()
-    //         });
-    //         console.log(response);
-    
-    //         if (!response.ok) {
-    //             throw new Error('Failed to delete movie');
-    //         }
-    
-    //         const data = await response.json();
-    //         return data;
-    //     } catch (error) {
-    //         throw new Error(error.message);
-    //     }
-    // };
 
     export const deleteMovieById = async (movieId) => {
         try {
@@ -241,5 +187,37 @@ try{
           throw new Error('Failed to fetch user information');
         }
       };
+
+      export const getAllUsers = async () => {
+        try {
+            const result = await fetch('https://capstoneprojectbackend-ywy6.onrender.com/api/users');
+            if (!result.ok) {
+                throw new Error('Failed to fetch users');
+            }
+            const response = await result.json();
+            console.log(response);
+            return response;
+        } catch(error) {
+            console.error('Error fetching users:', error); // Log error
+            throw error; 
+        }
+    }; 
+
+    export const getAllReviews = async () => {
+        try {
+            const result = await fetch('https://capstoneprojectbackend-ywy6.onrender.com/api/reviews');
+            if (!result.ok) {
+                throw new Error('Failed to fetch reviews');
+            }
+            const response = await result.json();
+            console.log(response);
+            return response;
+        } catch(error) {
+            console.error('Error fetching reviews:', error); // Log error
+            throw error; 
+        }
+    }; 
+
+
       
 

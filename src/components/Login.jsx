@@ -1,4 +1,3 @@
-// Login.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
@@ -20,16 +19,14 @@ export default function Login({ setToken, setUserId, setIsAdmin }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // clear form after submission
-            const { token, user, isAdmin } = await login(username, password); // Assuming login function returns token and userId
+            const { token, user, isAdmin } = await login(username, password); 
             setToken(token);
-            setUserId(user.id); // Set the userId in state
+            setUserId(user.id); 
             console.log({user, isAdmin});
             setIsAdmin(user.isadmin)
-            // localStorage.setItem('token', token); 
             setUsername('');
             setPassword('');
-            if (user.isAdmin) { // Check if user is admin
+            if (user.isAdmin) { 
                 navigate('/');
             } else {
                 navigate('/');

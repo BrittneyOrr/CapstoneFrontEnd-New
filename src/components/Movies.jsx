@@ -1,11 +1,8 @@
-//// setup the homepage to display the movies
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { getAllMovies, deleteMovieById, fetchMovieReviews } from '../api';
 
 export default function AllMovies({ isAdmin }) {
-    console.log({isAdmin});
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -16,13 +13,12 @@ export default function AllMovies({ isAdmin }) {
         async function getAllMoviesHandler() {
             try {
                 const moviesData = await getAllMovies();
-                // Fetch reviews for each movie
                 const moviesWithReviews = await Promise.all(
                     moviesData.map(async (movie) => {
                         const reviews = await fetchMovieReviews(movie.id);
                         return {
                             ...movie,
-                            reviews: reviews || [] // Default to empty array if reviews is null
+                            reviews: reviews || [] 
                         };
                     })
                 );
@@ -49,10 +45,7 @@ export default function AllMovies({ isAdmin }) {
     };
 
 
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
-
+   
     const handleDeleteMovie = async (movieId) => {
         try {
             await deleteMovieById(movieId);
@@ -106,8 +99,10 @@ export default function AllMovies({ isAdmin }) {
                                                 </div>
                                             </div>
                                             <div className="card-footer p-2">
-                                                {isAdmin ? ( // Check if admin is logged in
+                                                {isAdmin ? ( 
                                                     <button onClick={() => handleDeleteMovie(id)} className='btn btn-danger btn-sm'>Delete Movie</button>
+                                                    
+
                                                 ) : (
                                                     <button onClick={() => navigate(`/movies/${id}`)} className='btn btn-primary btn-sm' style={{ backgroundColor: 'purple' }}>See Details</button>
                                                 )}
