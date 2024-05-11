@@ -137,16 +137,16 @@ export async function register(userData) {
 	}
 }
 
-export const updateReview = async reviewData => {
+export const updateReview = async reviewId => {
 	try {
 		const response = await fetch(
-			`https://capstoneprojectbackend-ywy6.onrender.com/api/reviews/${reviewData.id}`,
+			`https://capstoneprojectbackend-ywy6.onrender.com/api/reviews/${reviewId}`,
 			{
 				method: "PATCH",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(reviewData),
+				body: JSON.stringify(),
 			}
 		);
 		if (!response.ok) {
@@ -154,6 +154,7 @@ export const updateReview = async reviewData => {
 		}
 		const data = await response.json();
 		return data;
+		console.log({data});
 	} catch (error) {
 		throw new Error(error.message);
 	}

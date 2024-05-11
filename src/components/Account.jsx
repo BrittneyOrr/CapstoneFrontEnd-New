@@ -74,10 +74,10 @@ const Account = ({ userId, isAdmin }) => {
 		}
 	};
 
-	const handleUpdateReview = async reviewData => {
+	const handleUpdateReview = async reviewId => {
 		try {
-			await updateReview(reviewData); // Update review and return updated review data from database
-			setReviews({ ...reviews, reviewData }); // Replace review data in state with updated review data
+			await updateReview(reviewId); // Update review and return updated review data from database
+			setReviews({ ...reviews, reviewId }); // Replace review data in state with updated review data
 			setIsActive(null);
 			setIsEditingReview(false);
 		} catch (error) {
