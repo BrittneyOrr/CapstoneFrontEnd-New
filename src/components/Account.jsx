@@ -73,17 +73,34 @@ const Account = ({ userId, isAdmin }) => {
       console.error("Error deleting review:", error);
     }
   };
-
   const handleUpdateReview = async (reviewData) => {
     try {
-      await updateReview(reviewData); // Update review and return updated review data from database
-      setReviews({ ...reviews, reviewData }); // Replace review data in state with updated review data
+      await updateReview(reviewData);
+      setReviews((prevReviews) =>
+        prevReviews.map((review) =>
+          review.id === reviewData.id
+            ? { ...review, comment: reviewData.comment }
+            : review
+        )
+      );
       setIsActive(null);
       setIsEditingReview(false);
     } catch (error) {
       console.error("Error updating review:", error);
+      // Add additional error handling logic here
     }
   };
+
+  // const handleUpdateReview = async (reviewData) => {
+  //   try {
+  //     await updateReview(reviewData); // Update review and return updated review data from database
+  //     setReviews({ ...reviews, reviewData }); // Replace review data in state with updated review data
+  //     setIsActive(null);
+  //     setIsEditingReview(false);
+  //   } catch (error) {
+  //     console.error("Error updating review:", error);
+  //   }
+  // };
 
   const movieName = (movieId) => {
     const movie = movies.find((movie) => movie.id === movieId);
@@ -136,65 +153,70 @@ const Account = ({ userId, isAdmin }) => {
               </tr>
             </thead>
             <tbody>
-              {reviews.map((review) => (
-                <tr key={review.id}>
-                  <td className="align-middle">{movieName(review.movie_id)}</td>
-                  <td className="align-middle text-center">{review.rating}</td>
-                  <td colSpan={3}>
-                    <div className="main d-flex gap-3">
-                      <div className="d-flex flex-grow-1 justify-content-between">
-                        {isEditingReview && review.id === isActive.id ? (
-                          <form
-                            onSubmit={handleReviewSubmit}
-                            className="flex-fill"
-                          >
-                            <div className="input-group col-auto">
-                              <input
-                                type="text"
-                                className="form-control"
-                                defaultValue={review.comment}
-                                onChange={(e) =>
-                                  setEditedReview(e.target.value)
-                                }
-                              />
-                              <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={() =>
-                                  handleUpdateReview({
-                                    ...isActive,
-                                    comment: editedReview
-                                  })
-                                }
-                              >
-                                Submit Update
-                              </button>
-                            </div>
-                          </form>
-                        ) : (
-                          <>
-                            <div className="align-self-center">
-                              {review.comment}
-                            </div>
-                            <button
-                              onClick={() => handleEditReview(review)}
-                              className="btn btn-primary"
+              {Array.isArray(reviews) &&
+                reviews.map((review) => (
+                  <tr key={review.id}>
+                    <td className="align-middle">
+                      {movieName(review.movie_id)}
+                    </td>
+                    <td className="align-middle text-center">
+                      {review.rating}
+                    </td>
+                    <td colSpan={3}>
+                      <div className="main d-flex gap-3">
+                        <div className="d-flex flex-grow-1 justify-content-between">
+                          {isEditingReview && review.id === isActive.id ? (
+                            <form
+                              onSubmit={handleReviewSubmit}
+                              className="flex-fill"
                             >
-                              Edit Review
-                            </button>
-                          </>
-                        )}
+                              <div className="input-group col-auto">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  defaultValue={review.comment}
+                                  onChange={(e) =>
+                                    setEditedReview(e.target.value)
+                                  }
+                                />
+                                <button
+                                  type="button"
+                                  className="btn btn-primary"
+                                  onClick={() =>
+                                    handleUpdateReview({
+                                      ...isActive,
+                                      comment: editedReview
+                                    })
+                                  }
+                                >
+                                  Submit Update
+                                </button>
+                              </div>
+                            </form>
+                          ) : (
+                            <>
+                              <div className="align-self-center">
+                                {review.comment}
+                              </div>
+                              <button
+                                onClick={() => handleEditReview(review)}
+                                className="btn btn-warning"
+                              >
+                                Edit Review
+                              </button>
+                            </>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => handleDeleteReview(review.id)}
+                          className="btn btn-danger"
+                        >
+                          Delete Review
+                        </button>
                       </div>
-                      <button
-                        onClick={() => handleDeleteReview(review.id)}
-                        className="btn btn-danger"
-                      >
-                        Delete Review
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
