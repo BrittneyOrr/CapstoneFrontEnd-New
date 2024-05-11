@@ -1,149 +1,296 @@
-// import { useReviews } from "../context/ReviewContext";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  getAllUsers,
+  getAllReviews,
+  getAllMovies,
+  fetchUserReviews,
+  fetchUserInfo,
+  updateReview,
+  deleteReviewByID
+} from "../api";
+import { useNavigate } from "react-router-dom";
 
-const Account = () => {
-  //  const { reviews } = useReviews();
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  const [reviews, setReviews] = useState(
-    JSON.parse(localStorage.getItem("reviews")) || []
-  );
-  const [movieId, setMovieId] = useState(localStorage.getItem("movieId"));
-  const [reviewId, setReviewId] = useState(localStorage.getItem("reviewId"));
+const Account = ({ userId, isAdmin }) => {
+  const [users, setUsers] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
+  const [isEditingReview, setIsEditingReview] = useState(false);
+  const [isActive, setIsActive] = useState({});
+  const [editedReview, setEditedReview] = useState(null);
 
-  // Fetch data from local storage when the component mounts
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user")) || [];
-    const storedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
-    const storedMovieId = localStorage.getItem("movieId") || [];
-    const storedReviewId = localStorage.getItem("reviewId") || [];
+    const fetchData = async () => {
+      try {
+        if (isAdmin) {
+          const usersData = await getAllUsers();
+          const reviewsData = await getAllReviews();
+          const moviesData = await getAllMovies();
+          setUsers(usersData);
+          setReviews(reviewsData);
+          setMovies(moviesData);
+        } else {
+          const userInfo = await fetchUserInfo(userId);
+          setUser(userInfo);
 
-    if (storedUser) setUser(storedUser);
-    if (storedReviews) setReviews(storedReviews);
-    if (storedMovieId) setMovieId(storedMovieId);
-    if (storedReviewId) setReviewId(storedReviewId);
-  }, []);
-  console.log("Retrieved reviews:", reviews);
+          const userReviews = await fetchUserReviews(userId);
+          setReviews(userReviews);
+
+          const movies = await getAllMovies();
+          setMovies(movies);
+        }
+
+        setIsLoading(false);
+      } catch (error) {
+        setError(error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+    handleUpdateReview(isActive);
+  }, [userId, isAdmin]);
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  const handleEditReview = (value) => {
+    setIsActive({ ...value });
+    setIsEditingReview(true);
+    setEditedReview(value.comment);
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      await deleteReviewByID(reviewId);
+      setReviews((prevReviews) =>
+        prevReviews.filter((review) => review.id !== reviewId)
+      );
+    } catch (error) {
+      console.error("Error deleting review:", error);
+    }
+  };
+
+  const handleUpdateReview = async (reviewData) => {
+    try {
+      await updateReview(reviewData); // Update review and return updated review data from database
+      setReviews({ ...reviews, reviewData }); // Replace review data in state with updated review data
+      setIsActive(null);
+      setIsEditingReview(false);
+    } catch (error) {
+      console.error("Error updating review:", error);
+    }
+  };
+
+  const movieName = (movieId) => {
+    const movie = movies.find((movie) => movie.id === movieId);
+    return movie.title;
+  };
+
+  const navigate = useNavigate();
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center">Account Details</h1>
-      {user ? (
-        <div className="card">
-          <div className="card-body">
-            <h5 className="card-title">User: {user.username}</h5>
-            <p className="card-text">User ID: {user.id}</p>
-            <p className="card-text">Email: {user.email}</p>
-          </div>
+      <h1>{isAdmin ? "Admin Account" : "Account Details"}</h1>
+      {isAdmin ? (
+        <div>
+          <h2>All Users</h2>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>User Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.id}</td>
+                  <td>{user.username}</td>
+                  <td>{user.email}</td>
+                  <td>{user.isadmin ? "Admin" : "Regular User"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <h2>All Reviews</h2>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Movie</th>
+                <th className="text-center">Rating</th>
+                <th>Comment</th>
+                <th colSpan={2}> </th>
+              </tr>
+            </thead>
+            <tbody>
+              {reviews.map((review) => (
+                <tr key={review.id}>
+                  <td className="align-middle">{movieName(review.movie_id)}</td>
+                  <td className="align-middle text-center">{review.rating}</td>
+                  <td colSpan={3}>
+                    <div className="main d-flex gap-3">
+                      <div className="d-flex flex-grow-1 justify-content-between">
+                        {isEditingReview && review.id === isActive.id ? (
+                          <form
+                            onSubmit={handleReviewSubmit}
+                            className="flex-fill"
+                          >
+                            <div className="input-group col-auto">
+                              <input
+                                type="text"
+                                className="form-control"
+                                defaultValue={review.comment}
+                                onChange={(e) =>
+                                  setEditedReview(e.target.value)
+                                }
+                              />
+                              <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={() =>
+                                  handleUpdateReview({
+                                    ...isActive,
+                                    comment: editedReview
+                                  })
+                                }
+                              >
+                                Submit Update
+                              </button>
+                            </div>
+                          </form>
+                        ) : (
+                          <>
+                            <div className="align-self-center">
+                              {review.comment}
+                            </div>
+                            <button
+                              onClick={() => handleEditReview(review)}
+                              className="btn btn-primary"
+                            >
+                              Edit Review
+                            </button>
+                          </>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => handleDeleteReview(review.id)}
+                        className="btn btn-danger"
+                      >
+                        Delete Review
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : (
-        <p>Please log in to view account details.</p>
-      )}
-      <div>
-        <h1>Account Details</h1>
-        <h2>Your Reviews</h2>
-        {reviews.map((review, index) => (
-          <div key={index}>
-            <p>Movie ID: {review.movieId}</p>
-            <p>Comment: {review.comment}</p>
-            <p>Rating: {review.rating}</p>
+        <div>
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">User: {user.username}</h5>
+              <p className="card-text">Email: {user.email}</p>
+              <p className="card-text">
+                User Role: {user.isadmin ? "Admin" : "Regular User"}
+              </p>
+            </div>
           </div>
-        ))}
-      </div>
-      <p>Most Recent Movie ID: {movieId}</p>
-      <p>Most Recent Review ID: {reviewId}</p>
+          <div>
+            <h2>Your Reviews</h2>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Movie</th>
+                  <th className="text-center">Rating</th>
+                  <th>Comment</th>
+                  <th colSpan={2}> </th>
+                </tr>
+              </thead>
+              <tbody>
+                {reviews.map((review) => (
+                  <tr key={review.id}>
+                    <td className="align-middle">
+                      {movieName(review.movie_id)}
+                    </td>
+                    <td className="align-middle text-center">
+                      {review.rating}
+                    </td>
+                    <td colSpan={3}>
+                      <div className="main d-flex gap-3">
+                        <div className="d-flex flex-grow-1 justify-content-between">
+                          {isEditingReview && review.id === isActive.id ? (
+                            <form
+                              onSubmit={handleReviewSubmit}
+                              className="flex-fill"
+                            >
+                              <div className="input-group col-auto">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  defaultValue={review.comment}
+                                  onChange={(e) =>
+                                    setEditedReview(e.target.value)
+                                  }
+                                />
+                                <button
+                                  type="button"
+                                  className="btn btn-primary"
+                                  onClick={() =>
+                                    handleUpdateReview({
+                                      ...isActive,
+                                      comment: editedReview
+                                    })
+                                  }
+                                >
+                                  Submit Update
+                                </button>
+                              </div>
+                            </form>
+                          ) : (
+                            <>
+                              <div className="align-self-center">
+                                {review.comment}
+                              </div>
+                              <button
+                                onClick={() => handleEditReview(review)}
+                                className="btn btn-primary"
+                              >
+                                Edit Review
+                              </button>
+                            </>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => handleDeleteReview(review.id)}
+                          className="btn btn-danger"
+                        >
+                          Delete Review
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Account;
-
-// import React, { useState, useEffect } from 'react';
-// import { useNavigate, useParams } from 'react-router-dom';
-// import UserReviews from './UserReviews';
-// // import { fetchUserReviews } from '../api';
-
-// // Updated fetchUserReviews function as shown above
-
-// export const fetchUserInfo = async (userId) => {
-//   // Mock implementation for demonstration purposes
-//   return Promise.resolve({
-//     id: userId,
-//     name: '',
-//     email: '',
-//   });
-// };
-
-// const Account = () => {
-//   const [userReviews, setUserReviews] = useState([]);
-//   const [userInfo, setUserInfo] = useState({});
-//   const [loading, setLoading] = useState(true);
-//   const [editedReview, setEditedReview] = useState('');
-//   const [editedRating, setEditedRating] = useState(0);
-//   const { userId } = useParams(); // Assuming you have a userId parameter in the route
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const reviews = await fetchUserReviews(userId);
-//         setUserReviews(reviews);
-//         const info = await fetchUserInfo(userId);
-//         setUserInfo(info);
-//         setLoading(false);
-//       } catch (error) {
-//         console.error('Error fetching data:', error);
-//       }
-//     };
-
-//     fetchData();
-//   }, [userId]); // Include userId in the dependency array
-
-//   const handleEditReview = (id) => {
-//     // Logic to handle editing the review
-//     navigate(`/edit-review/${id}`); // Assuming you have a route for editing reviews
-//   };
-
-//   const handleDeleteReview = (id) => {
-//     // Logic to handle deleting the review
-//     setUserReviews(userReviews.filter((review) => review.id !== id));
-//   };
-
-//   return (
-//     <div style={{ textAlign: 'center' }}>
-//       <h1 style={{ marginBottom: '20px' }}>Your Account</h1>
-//       {loading ? (
-//         <p>Loading user information...</p>
-//       ) : (
-//         <div>
-//           <p>
-//             <strong>Name:</strong> {userInfo.name}
-//           </p>
-//           <p>
-//             <strong>Email:</strong> {userInfo.email}
-//           </p>
-//         </div>
-//       )}
-//       <h1 style={{ marginTop: '50px' }}>Your Reviews</h1>
-//       {loading ? (
-//         <p>Loading reviews...</p>
-//       ) : (
-//         <ul>
-//           {userReviews.map((review) => (
-//             <li key={review.id}>
-//               {/* Render review details */}
-//               <p>{review.review}</p>
-//               <p>Rating: {review.rating}</p>
-//               <img src={review.poster} alt="Movie Poster" style={{ maxWidth: '200px', maxHeight: '300px' }} />
-//               {/* Edit and delete buttons */}
-//               <button onClick={() => handleEditReview(review.id)}>Edit</button>
-//               <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//       {/* Render the ReviewForm component for editing reviews */}
-//     </div>
-//   );
-// };
-
-// export default Account;
